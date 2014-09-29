@@ -17,51 +17,84 @@ Quick Start
 
 Install the project to your GOPATH:
 
-  go get github.com/cjdell/go_angular_starter
+```bash
+go get github.com/cjdell/go_angular_starter
+```
 
 Install Go dependencies:
 
-  go get github.com/jmoiron/sqlx
-  go get github.com/gorilla/rpc
+```bash
+go get bitbucket.org/liamstask/goose/cmd/goose
+go get github.com/jmoiron/sqlx
+go get github.com/gorilla/rpc
+go get github.com/gorilla/context
+go get github.com/kylelemons/go-gypsy/yaml
+```
 
 Set up the database. Out of the box a Postgres SQL database is expected to exist called "go_angular_starter" on the localhost, accessible by the current user. Change the configuration located at:
 
-  db/dbconf.yml
+```bash
+vim db/dbconf.yml
+```
+
+NOTE: You may wish to alter your pg_hba.conf to allow access via localhost without a password. If so add this line:
+
+```
+host    all   all   127.0.0.1/32    trust
+```
 
 Run the initial migration to create tables:
 
-  goose up  # Assuming $GOPATH/bin is in your PATH
+```bash
+goose up  # Assuming $GOPATH/bin is in your PATH
+```
 
 Install NPM / Bower dependencies
 
-  cd $GOPATH/src/go_angular_starter
+```bash
+sudo npm -g install gulp
 
-  npm install
-  bower install
+cd $GOPATH/src/github.com/cjdell/go_angular_starter
+
+npm install
+bower install
+```
 
 Run the Gulp tasks (for Browserify / SASS compilation)
 
-  gulp admin-watch  # Leave this running and open a new terminal
+```bash
+gulp admin-watch  # Leave this running and open a new terminal
+```
 
 Run the HTTP server:
 
-  go run server.go
+```bash
+go run server.go
+```
 
 Database
 --------
 
 To create a new migration, run:
 
-  goose create MIGRATION_NAME [sql]
+```bash
+goose create MIGRATION_NAME [sql]
+```
 
 i.e.
 
-  goose create NewTables sql
+```bash
+goose create NewTables sql
+```
 
 Then run:
 
-  goose up
+```bash
+goose up
+```
 
 To undo this migration:
 
-  goose down
+```bash
+goose down
+```
