@@ -24,6 +24,7 @@ go get github.com/cjdell/go_angular_starter
 Install Go dependencies:
 
 ```bash
+go get bitbucket.org/liamstask/goose/cmd/goose
 go get github.com/jmoiron/sqlx
 go get github.com/gorilla/rpc
 ```
