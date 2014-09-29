@@ -1,6 +1,11 @@
 Go Angular Starter
 ==================
 
+Demo
+----
+
+Demo site available at: http://go-angular-starter.buz.co:3000/
+
 Features
 --------
 
