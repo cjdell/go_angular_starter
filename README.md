@@ -44,7 +44,7 @@ goose up  # Assuming $GOPATH/bin is in your PATH
 Install NPM / Bower dependencies
 
 ```bash
-cd $GOPATH/src/go_angular_starter
+cd $GOPATH/src/github.com/cjdell/go_angular_starter
 
 npm install
 bower install
