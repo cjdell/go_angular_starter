@@ -1,0 +1,13 @@
+<div class="pure-g">
+    <div id="list" class="pure-u-1 pure-u-md-1-3">
+        <div class="item-list">
+            <div class="item" ng-repeat="record in records" ui-sref="records.categories.view({ id: record.Id })">
+                <h4 class="item-title">{{record.FqName}}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div id="content" class="pure-u-1 pure-u-md-2-3">
+        <ui-view></ui-view>
+    </div>
+</div>

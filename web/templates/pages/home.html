@@ -1,0 +1,18 @@
+{{ define "content" }}
+
+<div class="products pure-g images">
+  {{ range .Products }}
+  <div class="product pure-u-1 pure-u-md-1-4">
+    <div class="image">
+      <h3>{{ .Name }}</h3>
+      {{ range .Images }}
+      <img src="{{ .FilePath }}" />
+      {{ end }}
+      <div class="description">{{ .Description }}</div>
+      <div class="price">&pound;{{ .Price }}</div>
+    </div>
+  </div>
+  {{ end }}
+</div>
+
+{{ end }}

@@ -1,0 +1,10 @@
+<div class="animate" ng-if="levelIndex == $index" ng-repeat="level in levels">
+  <h3 ng-if="!level.parent">Top level</h3>
+  <h3 ng-if="level.parent">{{level.parent.Name}}</h3>
+  <ul>
+    <li ng-repeat="category in level.categories">
+      <a class="next-level" ng-click="nextLevel(category)">{{category.Name}}</a>
+      <a class="select" ng-click="select(category)">Select</a>
+    </li>
+  </ul>
+</div>

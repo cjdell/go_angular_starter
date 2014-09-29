@@ -1,0 +1,10 @@
+{
+  "name": "go_angular_starter",
+  "version": "0.0.1",
+  "description": "Go Angular Starter",
+  "license": "WTFPL (Do What The Fuck You Want To Public License)",
+  "private": true,
+  "dependencies": {
+    "pure": "~0.5.0"
+  }
+}

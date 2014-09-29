@@ -1,0 +1,376 @@
+@import "./lib/ngDialog";
+@import "./lib/ngDialog-theme-plain";
+
+/* Elements
+================================================================================================================================ */
+body {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #1b98f8;
+}
+
+div > :first-child {
+    margin-top: 0;
+}
+
+body > div {
+    height: 100vh;
+    max-height: 100vh;
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+}
+
+h1.logo {
+    margin: 20px 0;
+}
+
+/* Wizard
+================================================================================================================================ */
+.wizard {
+    position: relative;
+
+    [ui-view].ng-enter, [ui-view].ng-leave {
+        transition:all 500ms ease-in-out;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    [ui-view].ng-enter {
+        opacity: 0;
+    }
+
+    [ui-view].ng-enter-active {
+        opacity: 1;
+    }
+
+    [ui-view].ng-leave {
+        opacity: 1;
+    }
+
+    [ui-view].ng-leave-active {
+        opacity: 0;
+    }
+
+    &.wizard-moved-forward {
+        [ui-view].ng-enter {
+            transform: translate3d(100%, 0, 0);
+        }
+
+        [ui-view].ng-enter-active {
+            transform: translate3d(0, 0, 0);
+        }
+
+        [ui-view].ng-leave {
+            transform: translate3d(0, 0, 0);
+        }
+
+        [ui-view].ng-leave-active {
+            transform: translate3d(-100%, 0, 0);
+        }
+    }
+
+    &.wizard-moved-backward {
+        [ui-view].ng-enter {
+            transform: translate3d(-100%, 0, 0);
+        }
+
+        [ui-view].ng-enter-active {
+            transform: translate3d(0, 0, 0);
+        }
+
+        [ui-view].ng-leave {
+            transform: translate3d(0, 0, 0);
+        }
+
+        [ui-view].ng-leave-active {
+            transform: translate3d(100%, 0, 0);
+        }
+    }
+}
+
+/* Category selection dialog
+================================================================================================================================ */
+.select-category-dialog {
+    .ngdialog-content {
+        overflow: hidden;
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                border-bottom: solid 1px #bbb;
+                line-height: 32px;
+                display: block;
+                color: #000;
+                position: relative;
+
+                a.select {
+                    float: right;
+                    margin: 0 24px 0 0;
+                }
+
+                /* Arrow stuff */
+                &:after, &:before {
+                    width: 6px;
+                    height: 8px;
+                    right: 100%;
+                    border-left: 1px solid black;
+                    border-right: 1px solid black;
+                    content: "";
+                    position: absolute;
+                    pointer-events: none;
+                    right: 7px;
+                }
+
+                &:after {
+                    -webkit-transform: skew(-135deg);
+                    top: 8px;
+
+                }
+                &:before {
+                    -webkit-transform: skew(135deg);
+                    top: 16px;
+                }
+            }
+        }
+    }
+}
+
+/* ngRepeat animation
+================================================================================================================================ */
+.animate.ng-enter, .animate.ng-leave {
+    transition: 250ms ease-in all;
+}
+
+.animate.ng-enter {
+    transform: translate3d(100%, 0, 0);
+}
+.animate.ng-leave {
+    transform: translate3d(0, 0, 0);
+    position: absolute;
+    width: 100%;
+}
+.animate.ng-enter.ng-enter-active {
+    transform: translate3d(0, 0, 0);
+}
+.animate.ng-leave.ng-leave-active {
+    transform: translate3d(-100%, 0, 0);
+}
+
+/* Category field
+================================================================================================================================ */
+.category-field {
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            margin: 8px 0 0 0;
+            line-height: 32px;
+            padding: 0 10px;
+            border: solid 1px #ddd;
+            border-radius: 10px;
+
+            .delete {
+                color: #d00;
+            }
+        }
+    }
+}
+
+/* Buttons
+================================================================================================================================ */
+.pure-button {
+    border-radius: 10px;
+
+    &.new-button {
+        background: #fff;
+        border: 1px solid #ddd;
+        color: #666;
+    }
+    &.save-button {
+        color: #fff;
+        background: #1b98f8;
+    }
+    &.delete-button {
+        color: #fff;
+        background: #d01b1b;
+    }
+
+    &.back-button {
+        float: left;
+    }
+    &.next-button {
+        color: #fff;
+        background: #1b98f8;
+    }
+}
+
+/* Regions
+================================================================================================================================ */
+#menu {
+    background: #999;
+
+    &,
+    a {
+        color: #fff;
+    }
+    ul {
+        list-style: none;
+        padding: 16px;
+        margin: 0;
+
+        li {
+            line-height: 32px;
+
+            .count {
+                color: #000;
+            }
+        }
+    }
+}
+
+#main {
+
+}
+
+#list {
+    background: #ccc;
+}
+
+#content {
+    /*padding: 16px;*/
+}
+
+.narrow-layout > div {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Item list
+================================================================================================================================ */
+.item-list {
+    .item {
+        padding: 16px;
+        border-bottom: solid 1px #999;
+
+        &:last-child {
+            border-bottom: none;
+        }
+        & > * {
+            line-height: 32px;
+            margin: 0;
+        }
+        .item-title {
+
+        }
+        .item-subtitle {
+
+        }
+        .item-summary {
+
+        }
+    }
+}
+
+/* Forms
+================================================================================================================================ */
+.form-container {
+    padding: 16px;
+
+    .form-title {
+
+    }
+
+    .form-buttons {
+        margin: .67em 0;
+        text-align: right;
+    }
+
+    input.ng-invalid {
+        background: #fee;
+    }
+
+    .pure-form .pure-g {
+        margin-bottom: 0.5em;
+
+        label {
+            line-height: 36px;
+            box-sizing: border-box;
+            margin-bottom: 0;
+        }
+    }
+
+    .validation-hint {
+        color: #d00;
+    }
+}
+
+/* Product form
+================================================================================================================================ */
+.product-form {
+    .image {
+        img {
+            max-width: 100%;
+        }
+
+        p {
+            text-align: center;
+        }
+    }
+}
+
+/* Layout tweaks
+================================================================================================================================ */
+body.records--products--view #list {
+    display: none
+}
+
+/* Tablet+ media queries
+================================================================================================================================ */
+@media (min-width: 48em) {
+    #list {
+        position: relative;
+        height: 100vh;
+    }
+
+    .item-list {
+        position: absolute;
+        overflow: auto;
+        height: 100vh;
+        width: 100%;
+    }
+
+    .pure-form .pure-g label {
+        text-align: right;
+        padding-right: 1em;
+    }
+
+    /* Re-enable list view for larger devices */
+    body.records--products--view #list {
+        display: inline-block;
+    }
+}
+
+/* Desktop+ media queries
+================================================================================================================================ */
+@media (min-width: 60em) {
+
+}

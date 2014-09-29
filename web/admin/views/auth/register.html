@@ -1,0 +1,34 @@
+<div class="form-container">
+
+    <h1 class="form-title">Register</h1>
+
+    <p>Please register below or <a ui-sref="auth.sign-in">sign in</a>.</p>
+
+    <form class="pure-form pure-form-aligned" ng-submit="signIn()" name="registerForm">
+        <fieldset>
+            <div class="pure-g">
+                <label class="pure-u-1 pure-u-md-1-4" for="email-input">Email</label>
+                <input class="pure-u-1 pure-u-md-3-4" id="email-input" type="email" placeholder="Email" ng-model="user.email" name="email" required />
+            </div>
+
+            <div class="pure-g">
+                <label class="pure-u-1 pure-u-md-1-4" for="password-input">Password</label>
+                <input class="pure-u-1 pure-u-md-3-4" id="password-input" type="password" placeholder="Password" ng-model="user.password" name="password" required />
+            </div>
+
+            <p class="validation-hint" ng-show="registerForm.password.$error.length">Password too short</p>
+
+            <div class="pure-g">
+                <label class="pure-u-1 pure-u-md-1-4" for="password-confirm-input">Confirm</label>
+                <input class="pure-u-1 pure-u-md-3-4" id="password-confirm-input" type="password" placeholder="Confirm Password" ng-model="password_confirm" name="password_confirm" required data-match="user.password" />
+            </div>
+
+            <p class="validation-hint" ng-show="registerForm.password_confirm.$error.match">Passwords do not match</p>
+        </fieldset>
+
+        <div class="form-buttons">
+            <button class="save-button pure-button" ng-click="register()">Register</button>
+        </div>
+    </form>
+
+</div>

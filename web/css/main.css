@@ -1,0 +1,68 @@
+/* GENERAL
+================================================================================================================================ */
+img {
+  max-width: 100%;
+}
+
+/* LAYOUT
+================================================================================================================================ */
+.container {
+  margin: 0 10px;
+}
+
+@media screen and (min-width: 760px) {
+  .container {
+    width: 720px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .container {
+    width: 960px;
+  }
+}
+
+@media screen and (min-width: 1240px) {
+  .container {
+    width: 1200px;
+  }
+}
+
+.logo {
+  height: 100px;
+}
+
+/* HOME PAGE
+================================================================================================================================ */
+.images {
+  margin: 0 -10px;
+}
+
+.image {
+  padding: 10px;
+  margin: 10px;
+  border: solid 1px #aaa;
+  border-radius: 5px;
+}
+.image:hover {
+  border: solid 1px #9ecaed;
+  box-shadow: 0 0 10px #9ecaed;
+}
+
+.image h3 {
+  margin: 0 0 10px 0;
+}
+.image img {
+  max-height: 200px;
+  display: block;
+  margin: 0 auto;
+}
+.image .description {
+  margin: 10px 0 0 0;
+}
+.image .price {
+  text-align: right;
+  font-size: 20px;
+  color: #e00;
+}

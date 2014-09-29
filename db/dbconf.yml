@@ -1,0 +1,9 @@
+test:
+  driver: postgres
+  open: user=foo dbname=foo_test sslmode=disable
+
+development:
+  driver: postgres
+  open: user=cjdell dbname=go_angular_starter sslmode=disable
+
+# You will need to change the user name above to one that exists on your server (i.e. your current username)

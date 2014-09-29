@@ -1,0 +1,7 @@
+<a class="pure-button" ng-click="selectCategory()">Select</a>
+<a class="pure-button" ng-click="clearCategory()">Clear</a>
+<span>Selected: {{getSelectedText()}}</span>
+
+<ul ng-if="categoryMode == 'many'">
+  <li ng-repeat="category in categoryField"><span class="delete" ng-click="removeCategory(category)">[x]</span> {{category.FqName}}</li>
+</ul>
