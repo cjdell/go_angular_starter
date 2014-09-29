@@ -1,8 +1,8 @@
 package services
 
 import (
-	"go_angular_starter/model/entity"
-	"go_angular_starter/model/persister"
+	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/persister"
 )
 
 func GenerateFullyQualifiedNames(db persister.DB, categoryId int64) error {

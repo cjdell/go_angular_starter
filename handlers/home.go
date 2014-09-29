@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/jmoiron/sqlx"
-	"go_angular_starter/api"
+	"github.com/cjdell/go_angular_starter/api"
 	"html/template"
 	"net/http"
 )

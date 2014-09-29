@@ -30,7 +30,7 @@ func (config) Env() string {
 }
 
 func (config) WebRoot() string {
-	return "web"
+	return "/home/cjdell/gopath/src/github.com/cjdell/go_angular_starter/web"
 }
 
 // Attempts to read database config file in "db/dbconf.yml"

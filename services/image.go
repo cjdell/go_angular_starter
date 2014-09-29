@@ -5,7 +5,7 @@ package services
 */
 
 import (
-	"go_angular_starter/config"
+	"github.com/cjdell/go_angular_starter/config"
 	"io/ioutil"
 	"os"
 	"path"

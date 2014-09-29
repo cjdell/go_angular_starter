@@ -6,9 +6,9 @@ import (
 	"github.com/gorilla/rpc/json"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"go_angular_starter/api"
-	"go_angular_starter/config"
-	"go_angular_starter/handlers"
+	"github.com/cjdell/go_angular_starter/api"
+	"github.com/cjdell/go_angular_starter/config"
+	"github.com/cjdell/go_angular_starter/handlers"
 	"log"
 	"net/http"
 	"os"
@@ -87,8 +87,10 @@ func MergeHandlers(staticHandler http.Handler, dynamicHandler *http.ServeMux) ht
 		log.Printf("Asset path: %s", assetPath)
 
 		if _, err := os.Stat(assetPath); os.IsNotExist(err) || r.URL.Path == "/" {
+			log.Printf("DYNAMIC")
 			dynamicHandler.ServeHTTP(w, r)
 		} else {
+			log.Printf("STATIC")
 			staticHandler.ServeHTTP(w, r)
 		}
 	})

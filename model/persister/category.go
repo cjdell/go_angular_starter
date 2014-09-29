@@ -1,7 +1,7 @@
 package persister
 
 import (
-	"go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/entity"
 	"reflect"
 )
 

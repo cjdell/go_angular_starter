@@ -3,7 +3,7 @@ package persister
 import (
 	"database/sql"
 	//	"github.com/jmoiron/sqlx"
-	"go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/entity"
 	"log"
 	"reflect"
 )

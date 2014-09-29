@@ -3,8 +3,8 @@ package services
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"go_angular_starter/model/entity"
-	"go_angular_starter/model/persister"
+	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/persister"
 )
 
 func RegisterUser(db persister.DB, email string, password string) error {

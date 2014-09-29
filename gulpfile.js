@@ -76,7 +76,7 @@ gulp.task('admin-sass', function() {
     .pipe(gulp.dest('./web/admin/dist'));
 });
 
-gulp.task('admin-watch', ['admin-lint', 'admin-beautify', 'admin-browserify-external'], function() {
+gulp.task('admin-watch', ['admin-lint', 'admin-beautify', 'admin-browserify-external', 'admin-browserify'], function() {
   gulp.watch(['./web/admin/js/**/*.js', './web/admin/js/**/*.json'], [
     'admin-lint',
     'admin-browserify'

@@ -3,9 +3,9 @@ package api
 import (
 	"errors"
 	"github.com/jmoiron/sqlx"
-	"go_angular_starter/model/entity"
-	"go_angular_starter/model/persister"
-	"go_angular_starter/services"
+	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/persister"
+	"github.com/cjdell/go_angular_starter/services"
 	"net/http"
 )
 

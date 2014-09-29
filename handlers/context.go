@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gorilla/context"
 	"github.com/jmoiron/sqlx"
-	"go_angular_starter/model/entity"
-	"go_angular_starter/model/persister"
+	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/persister"
 	"net/http"
 )
 

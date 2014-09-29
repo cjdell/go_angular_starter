@@ -8,7 +8,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/jmoiron/sqlx"
-	"go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/entity"
 	"reflect"
 	"strconv"
 	"strings"
