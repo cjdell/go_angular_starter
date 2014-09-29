@@ -37,6 +37,12 @@ Set up the database. Out of the box a Postgres SQL database is expected to exist
 vim db/dbconf.yml
 ```
 
+NOTE: You may wish to alter your pg_hba.conf to allow access via localhost without a password. If so add this line:
+
+```
+host    all   all   127.0.0.1/32    trust
+```
+
 Run the initial migration to create tables:
 
 ```bash
