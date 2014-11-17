@@ -1,28 +1,55 @@
 package handlers
 
 import (
-	"github.com/jmoiron/sqlx"
-	"github.com/cjdell/go_angular_starter/api"
-	"html/template"
+	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/cjdell/go_angular_starter/model/persister"
+	"github.com/cjdell/go_angular_starter/services"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
-func HomeHandler(db *sqlx.DB) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		productService := api.NewProductApi(db)
+type homeContent struct {
+	title    string
+	products []*services.ProductInfo
+}
 
-		args := &api.ProductGetAllArgs{}
-		reply := &api.ProductGetAllReply{}
+func (self homeContent) Title() string {
+	return self.title
+}
 
-		productService.GetAll(r, args, reply)
+func (self homeContent) ContentBody() interface{} {
+	return self.products
+}
 
-		p := &struct {
-			Title    string
-			Products []*api.ProductInfo
-		}{Title: "Welcome", Products: reply.Products}
+func (self AppHandlers) HomeHandler() AppHandler {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		vars := mux.Vars(r)
+		handle := vars["handle"]
 
-		t := template.Must(template.New("layout").ParseFiles("web/templates/layouts/main.html", "web/templates/pages/home.html"))
+		categoryPersister := persister.NewCategoryPersister(self.db)
+		productService := services.NewProductService(self.db, nil)
 
-		t.Execute(w, p)
+		var (
+			title    = ""
+			category = (*entity.Category)(nil)
+			products = ([]*services.ProductInfo)(nil)
+		)
+
+		err := error(nil)
+
+		if handle == "" {
+			title = "Home"
+			products, err = productService.GetAll(nil, nil)
+		} else {
+			category, _ = categoryPersister.GetByHandle(handle)
+			title = category.FqName
+			products, err = productService.GetAll(&category.Id, nil)
+		}
+
+		if err != nil {
+			return err
+		}
+
+		return self.Render(&homeContent{title, products}, []string{"pages/home.html", "partials/product_list.html"}, w)
 	}
 }

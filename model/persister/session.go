@@ -1,58 +1,34 @@
 package persister
 
 import (
-	"github.com/jmoiron/sqlx"
 	"github.com/cjdell/go_angular_starter/model/entity"
+	"reflect"
 )
 
 type SessionPersister struct {
-	db *sqlx.DB
+	db     DB
+	common *commonPersister
 }
 
-func NewSessionPersister(db *sqlx.DB) *SessionPersister {
-	return &SessionPersister{db}
+func NewSessionPersister(db DB) *SessionPersister {
+	entityType := reflect.TypeOf(&entity.Session{}).Elem()
+	return &SessionPersister{db, &commonPersister{db, entityType}}
 }
 
-func (self SessionPersister) GetByKey(key string) error {
-	query := `SELECT s.* FROM sessions AS s WHERE key = :key`
-
+func (self SessionPersister) GetByKey(key string) (*entity.Session, error) {
 	session := &entity.Session{}
-	err := self.db.Get(session, query, map[string]interface{}{"key": key})
 
-	if err != nil {
-		return err
-	}
+	params := QueryParameters{}
+	params["key"] = key
 
-	return nil
+	return session, self.common.getOne(session, "WHERE key = :key", params)
 }
 
 func (self SessionPersister) Insert(session *entity.Session) error {
-	query := `INSERT INTO sessions (user_id, api_key) VALUES (:user_id, :api_key)`
-
-	var id int64
-
-	r, err := self.db.NamedQuery(query, session)
-
-	if err != nil {
-		return err
-	}
-
-	r.Next()
-	r.Scan(&id)
-
-	session.Id = id
-
-	return nil
+	_, err := self.common.insert(session)
+	return err
 }
 
 func (self SessionPersister) Delete(id int64) error {
-	query := `DELETE FROM sessions WHERE id = :id`
-
-	_, err := self.db.NamedExec(query, map[string]interface{}{"id": id})
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return self.common.delete(id)
 }

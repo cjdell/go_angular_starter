@@ -1,0 +1,19 @@
+{{ define "product_list" }}
+
+<div class="products pure-g images">
+  {{ range . }}
+  <div class="pure-u-1 pure-u-md-1-4">
+    <div class="product">
+      <h3><a href="/product/{{ .Handle }}">{{ .Name }}</a></h3>
+      <a href="/product/{{ .Handle }}">
+        {{ if .Images }}
+        <img src="{{ (index .Images 0).Thumbs.SmallSrc }}" />
+        {{ end }}
+      </a>
+      <div class="price">&pound;{{ .Price }}</div>
+    </div>
+  </div>
+  {{ end }}
+</div>
+
+{{ end }}

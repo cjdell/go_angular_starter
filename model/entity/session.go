@@ -1,18 +1,22 @@
 package entity
 
 import (
-	"time"
+//	"time"
 )
 
 type Session struct {
 	__table struct{} `db:"sessions"`
 
-	Id      int64     `db:"id"`
-	UserId  int64     `db:"user_id"`
-	ApiKey  string    `db:"api_key"`
-	Expires time.Time `db:"expires"`
+	Id     int64  `db:"id"`
+	UserId int64  `db:"user_id"`
+	ApiKey string `db:"api_key"`
+	//Expires time.Time `db:"expires"`
 }
 
-func (session Session) GetId() int64 {
-	return session.Id
+func (self Session) GetId() int64 {
+	return self.Id
+}
+
+func (self *Session) SetId(id int64) {
+	self.Id = id
 }

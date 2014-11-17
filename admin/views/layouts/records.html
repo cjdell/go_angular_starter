@@ -1,0 +1,23 @@
+<div id="records-layout" class="layout">
+    <div id="menu" class="">
+        <ul class="parent-width">
+            <li>
+                <a ui-sref="dashboard">Dashboard</a>
+            </li>
+            <li ng-show="canView('User')">
+                <a ui-sref="records.users.new">Users<span class="count" ng-show="itemCounts.User"> ({{itemCounts.User}})</span></a>
+            </li>
+            <li ng-show="canView('Product')">
+                <a ui-sref="records.products.new">Products<span class="count" ng-show="itemCounts.Product"> ({{itemCounts.Product}})</span></a>
+            </li>
+            <li ng-show="canView('Category')">
+                <a ui-sref="records.categories.new">Categories<span class="count" ng-show="itemCounts.Category"> ({{itemCounts.Category}})</span></a>
+            </li>
+            <li>
+                <p class="signed-in-message">Signed in as <strong>{{getUser().Name}} ({{getUser().Type}})</strong></p>
+            </li>
+        </ul>
+    </div>
+
+    <div ui-view><!-- Templates specified in router (app.js) get injected here --></div>
+</div>

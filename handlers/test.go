@@ -4,6 +4,10 @@ import (
 	"net/http"
 )
 
-func TestHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello"))
+func (self AppHandlers) TestHandler() AppHandler {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		w.Write([]byte("Hello"))
+
+		return nil
+	}
 }

@@ -7,6 +7,7 @@ type Category struct {
 	ParentId int64  `db:"parent_id"`
 	Name     string `db:"name"`
 	FqName   string `db:"fq_name"`
+	Handle   string `db:"handle"`
 }
 
 func (Category) GetTypeName() string {
@@ -19,4 +20,10 @@ func (self *Category) GetId() int64 {
 
 func (self *Category) SetId(id int64) {
 	self.Id = id
+}
+
+func (self *Category) Merge(update *Category, fields []string) error {
+	self.Name = update.Name
+
+	return nil
 }

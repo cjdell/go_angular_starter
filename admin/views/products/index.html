@@ -1,0 +1,15 @@
+<div id="list" class="">
+    <div class="item-list parent-width scroll-container">
+        <div class="item" ng-repeat="record in records" ui-sref="records.products.view({ id: record.Id })">
+            <div ng-show="record.Images.length" class="thumb">
+                <img ng-src="{{record.Images[0].Thumbs.TinySrc}}" />
+            </div>
+            <h4 class="item-title">{{record.Name}}</h4>
+            <p class="item-summary">{{record.Price}}</p>
+        </div>
+    </div>
+</div>
+
+<div id="content" class="">
+    <ui-view></ui-view>
+</div>

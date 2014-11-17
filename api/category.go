@@ -1,170 +1,135 @@
 package api
 
 import (
-	"errors"
-	"github.com/jmoiron/sqlx"
-	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/cjdell/go_angular_starter/model/persister"
 	"github.com/cjdell/go_angular_starter/services"
+	"github.com/jmoiron/sqlx"
+	"log"
 	"net/http"
 )
 
-type CategoryApi struct {
-	db        *sqlx.DB
-	persister *persister.CategoryPersister
+type (
+	categoryApi struct{}
+
+	categoryRequest  struct{ *rest.Request }
+	categoryResponse struct{ rest.ResponseWriter }
+
+	categoryAction func(*services.CategoryService, categoryResponse, categoryRequest) error
+)
+
+func NewCategoryApi(db *sqlx.DB) http.Handler {
+	api := categoryApi{}
+
+	handler := &rest.ResourceHandler{}
+
+	wrap := func(action categoryAction, db *sqlx.DB, requireUser bool) rest.HandlerFunc {
+		return transactionWrap(db, func(w rest.ResponseWriter, r *rest.Request, db persister.DB) error {
+			user := GetUser(r.Request)
+
+			if requireUser && user == nil {
+				return AuthError{}
+			}
+
+			service := services.NewCategoryService(db, user)
+
+			return action(service, categoryResponse{w}, categoryRequest{r})
+		})
+	}
+
+	err := handler.SetRoutes(
+		&rest.Route{"GET", "/", wrap(categoryAction(api.getAll), db, false)},
+		&rest.Route{"GET", "/:id", wrap(categoryAction(api.getOne), db, false)},
+		&rest.Route{"POST", "/", wrap(categoryAction(api.post), db, true)},
+		&rest.Route{"PUT", "/:id", wrap(categoryAction(api.put), db, true)},
+		&rest.Route{"DELETE", "/:id", wrap(categoryAction(api.delete), db, true)},
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return handler
 }
 
-type CategoryInfo struct {
-	*entity.Category
-	Parent *entity.Category
-}
-
-func NewCategoryApi(db *sqlx.DB) *CategoryApi {
-	return &CategoryApi{db, persister.NewCategoryPersister(db)}
-}
-
-type CategoryGetAllArgs struct {
-}
-
-type CategoryGetAllReply struct {
-	Categories []*entity.Category
-}
-
-func (self *CategoryApi) GetAll(r *http.Request, args *CategoryGetAllArgs, reply *CategoryGetAllReply) error {
-	Categories, err := self.persister.GetAll()
+func (categoryApi) getAll(service *services.CategoryService, res categoryResponse, req categoryRequest) error {
+	categories, err := service.GetAll(req.ParentId(), nil)
 
 	if err != nil {
 		return err
 	}
 
-	reply.Categories = Categories
+	return res.WriteCategories(categories)
+}
+
+func (categoryApi) getOne(service *services.CategoryService, res categoryResponse, req categoryRequest) error {
+	category, err := service.GetOne(*req.Id())
+
+	if err != nil {
+		return err
+	}
+
+	return res.WriteCategory(category)
+}
+
+func (categoryApi) post(service *services.CategoryService, res categoryResponse, req categoryRequest) error {
+	var err error
+	var category *services.CategoryInfo
+
+	if category, err = service.Insert(req.Category()); err != nil {
+		return err
+	}
+
+	return res.WriteCategory(category)
+}
+
+func (categoryApi) put(service *services.CategoryService, res categoryResponse, req categoryRequest) error {
+	var err error
+	var category *services.CategoryInfo
+
+	if category, err = service.Update(req.Category()); err != nil {
+		return err
+	}
+
+	return res.WriteCategory(category)
+}
+
+func (categoryApi) delete(service *services.CategoryService, res categoryResponse, req categoryRequest) error {
+	if err := service.Delete(*req.Id()); err != nil {
+		return err
+	}
+
+	res.WriteHeader(http.StatusOK)
 
 	return nil
 }
 
-type CategoryGetChildrenArgs struct {
-	ParentId int64
+func (req categoryRequest) Id() *int64 {
+	return pathInt(req.Request, "id")
 }
 
-type CategoryGetChildrenReply struct {
-	Categories []*entity.Category
+func (req categoryRequest) ParentId() *int64 {
+	return queryInt(req.Request, "parent_id")
 }
 
-func (self *CategoryApi) GetChildren(r *http.Request, args *CategoryGetChildrenArgs, reply *CategoryGetChildrenReply) error {
-	Categories, err := self.persister.GetChildren(args.ParentId)
+func (req categoryRequest) Category() *services.CategoryChanges {
+	category := &services.CategoryChanges{}
 
-	if err != nil {
-		return err
+	if err := req.DecodeJsonPayload(&category); err != nil {
+		panic(err)
 	}
 
-	reply.Categories = Categories
-
-	return nil
-}
-
-type CategoryGetOneArgs struct {
-	Id int64
-}
-
-type CategoryGetOneReply struct {
-	Category *CategoryInfo
-}
-
-func (self *CategoryApi) GetOne(r *http.Request, args *CategoryGetOneArgs, reply *CategoryGetOneReply) error {
-	category, err := self.persister.GetById(args.Id)
-
-	if err != nil {
-		return err
+	if id := req.Id(); id != nil {
+		category.Id = *id
 	}
 
-	if category == nil {
-		return errors.New("Category not found")
-	}
-
-	var parent *entity.Category = nil
-
-	if category.ParentId != 0 {
-		parent, err = self.persister.GetById(category.ParentId)
-	}
-
-	reply.Category = &CategoryInfo{category, parent}
-
-	return nil
+	return category
 }
 
-type CategoryInsertArgs struct {
-	Category *entity.Category
+func (res categoryResponse) WriteCategories(categories []*services.CategoryInfo) error {
+	return res.WriteJson(categories)
 }
 
-type CategoryInsertReply struct {
-	Category *entity.Category
-}
-
-func (self *CategoryApi) Insert(r *http.Request, args *CategoryInsertArgs, reply *CategoryInsertReply) error {
-	err := self.persister.Insert(args.Category)
-
-	if err != nil {
-		return err
-	}
-
-	tx, _ := self.db.Beginx()
-
-	err = services.GenerateFullyQualifiedNames(tx, args.Category.Id)
-
-	if err != nil {
-		return err
-	} else {
-		tx.Commit()
-	}
-
-	reply.Category = args.Category
-
-	return nil
-}
-
-type CategoryUpdateArgs struct {
-	Category *entity.Category
-}
-
-type CategoryUpdateReply struct {
-	Category *CategoryInfo
-}
-
-func (self *CategoryApi) Update(r *http.Request, args *CategoryUpdateArgs, reply *CategoryUpdateReply) error {
-	err := self.persister.Update(args.Category)
-
-	if err != nil {
-		return err
-	}
-
-	tx, _ := self.db.Beginx()
-
-	err = services.GenerateFullyQualifiedNames(tx, args.Category.Id)
-
-	if err != nil {
-		return err
-	} else {
-		tx.Commit()
-	}
-
-	var parent *entity.Category = nil
-
-	if args.Category.ParentId != 0 {
-		parent, err = self.persister.GetById(args.Category.ParentId)
-	}
-
-	reply.Category = &CategoryInfo{args.Category, parent}
-
-	return nil
-}
-
-type CategoryDeleteArgs struct {
-	Id int64
-}
-
-type CategoryDeleteReply struct {
-}
-
-func (self *CategoryApi) Delete(r *http.Request, args *CategoryDeleteArgs, reply *CategoryDeleteReply) error {
-	return self.persister.Delete(args.Id)
+func (res categoryResponse) WriteCategory(category *services.CategoryInfo) error {
+	return res.WriteJson(category)
 }

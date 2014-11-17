@@ -1,0 +1,40 @@
+{
+  "name": "generator-go-angular-starter",
+  "version": "0.0.0",
+  "description": "Generator for Go Angular Starter",
+  "license": "MIT",
+  "main": "app/index.js",
+  "repository": "cjdell/generator-go-angular-starter",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": "https://github.com/cjdell"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "app"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "chalk": "^0.5.0",
+    "change-case": "^2.1.5",
+    "escodegen": "^1.4.1",
+    "esprima": "^1.2.2",
+    "plural": "^0.1.6",
+    "yeoman-generator": "^0.17.0",
+    "yosay": "^0.3.0"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "peerDependencies": {
+    "yo": ">=1.0.0"
+  }
+}

@@ -1,0 +1,36 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ .Title }}</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Pure CSS -->
+  <link rel="stylesheet" href="/assets/lib/pure/pure-min.css" />
+  <link rel="stylesheet" href="/assets/lib/pure/grids-responsive-min.css" />
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/assets/dist/app.css" />
+
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- <h1>{{ .Title }}</h1> -->
+
+    <h1><img src="/assets/img/logo.png" class="logo" alt="{{ .Title }}" /></h1>
+
+    {{ template "category_menu" . }}
+
+    {{ template "content" . }}
+
+  </div>
+
+  <script src="/assets/dist/external.js"></script>
+  <script src="/assets/dist/app.js"></script>
+
+</body>
+</html>
+{{ end }}

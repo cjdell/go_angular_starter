@@ -7,19 +7,27 @@ import (
 	"path"
 )
 
-var App Config = &config{} // Main config instance
+var App *Config = newConfig() // Main config instance
 
-type (
-	Config interface {
-		Env() string
-		WebRoot() string
-		DatabaseConfig() (string, string, error)
-	}
+type Config struct {
+	DatabaseDriver string
+	DatabaseOpen   string
 
-	config struct{}
-)
+	AssetRoot    string
+	AdminRoot    string
+	TemplateRoot string
 
-func (config) Env() string {
+	ListenAddress string
+}
+
+func newConfig() *Config {
+	config := &Config{}
+	config.ReadDatabaseConfig()
+	config.ReadGeneralConfig()
+	return config
+}
+
+func (Config) Env() string {
 	env := os.Getenv("ENV")
 
 	if env == "" {
@@ -29,33 +37,68 @@ func (config) Env() string {
 	return env
 }
 
-func (config) WebRoot() string {
-	return "web"
-}
-
 // Attempts to read database config file in "db/dbconf.yml"
-func (self config) DatabaseConfig() (string, string, error) {
+func (self *Config) ReadDatabaseConfig() error {
 	var (
 		cfgFile = path.Join("db", "dbconf.yml")
-		env     = self.Env()
+		f       *yaml.File
+		err     error
 	)
 
-	f, err := yaml.ReadFile(cfgFile)
-	if err != nil {
-		return "", "", err
+	if f, err = yaml.ReadFile(cfgFile); err != nil {
+		return err
 	}
 
-	drv, err := f.Get(fmt.Sprintf("%s.driver", env))
-	if err != nil {
-		return "", "", err
+	if self.DatabaseDriver, err = self.getParam(f, "driver"); err != nil {
+		return err
 	}
-	drv = os.ExpandEnv(drv)
 
-	open, err := f.Get(fmt.Sprintf("%s.open", env))
-	if err != nil {
-		return "", "", err
+	if self.DatabaseOpen, err = self.getParam(f, "open"); err != nil {
+		return err
 	}
-	open = os.ExpandEnv(open)
 
-	return drv, open, nil
+	return nil
+}
+
+// Attempts to read general config file in "config/config.yml"
+func (self *Config) ReadGeneralConfig() error {
+	var (
+		cfgFile = path.Join("config", "config.yml")
+		f       *yaml.File
+		err     error
+	)
+
+	if f, err = yaml.ReadFile(cfgFile); err != nil {
+		return err
+	}
+
+	if self.AssetRoot, err = self.getParam(f, "asset_root"); err != nil {
+		return err
+	}
+
+	if self.AdminRoot, err = self.getParam(f, "admin_root"); err != nil {
+		return err
+	}
+
+	if self.TemplateRoot, err = self.getParam(f, "template_root"); err != nil {
+		return err
+	}
+
+	if self.ListenAddress, err = self.getParam(f, "listen_address"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (self *Config) getParam(f *yaml.File, param string) (string, error) {
+	env := self.Env()
+
+	val, _ := f.Get(fmt.Sprintf("%s.%s", env, param))
+
+	if val != "" {
+		return val, nil
+	}
+
+	return f.Get(fmt.Sprintf("all.%s", param))
 }

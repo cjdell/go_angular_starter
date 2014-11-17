@@ -7,16 +7,16 @@ package persister
 import (
 	"database/sql"
 	"errors"
-	"github.com/jmoiron/sqlx"
+	"fmt"
 	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/jmoiron/sqlx"
+	//"log"
 	"reflect"
 	"strconv"
 	"strings"
 )
 
 type DB interface {
-	Select(dest interface{}, query string, args ...interface{}) error
-	Get(dest interface{}, query string, args ...interface{}) error
 	NamedQuery(query string, arg interface{}) (*sqlx.Rows, error)
 	NamedExec(query string, arg interface{}) (sql.Result, error)
 	Exec(query string, args ...interface{}) (sql.Result, error)
@@ -27,33 +27,87 @@ type commonPersister struct {
 	entityType reflect.Type
 }
 
-func (self commonPersister) getAll(ents interface{}, where string, params ...interface{}) error {
+type Limit struct {
+	Limit  int64
+	Offset int64
+}
+
+type QueryParameters map[string]interface{}
+
+func NewQueryParametersWithId(id int64) QueryParameters {
+	params := QueryParameters{}
+	params["id"] = id
+	return params
+}
+
+type NotFoundError struct {
+}
+
+func (NotFoundError) Error() string { return "Not found" }
+
+func (self commonPersister) getAll(ents interface{}, limit *Limit, where string, params QueryParameters) error {
 	var (
 		table   = entity.GetDbTable(self.entityType)
 		columns = entity.GetDbColumns(self.entityType)
 	)
 
-	if where == "" {
-		where = "1 = 1"
+	if params == nil {
+		params = make(QueryParameters)
 	}
 
-	query := "SELECT e." + strings.Join(columns, ", e.") + " FROM " + table + " AS e WHERE " + where + " ORDER BY e.id ASC"
+	limitClause := ""
 
-	return self.db.Select(ents, query, params...)
+	if limit != nil {
+		limitClause = fmt.Sprintf(" LIMIT %d OFFSET %d", limit.Limit, limit.Offset)
+	}
+
+	query := "SELECT e." + strings.Join(columns, ", e.") + " FROM " + table + " AS e " + where + " ORDER BY e.id ASC" + limitClause
+
+	//log.Println(query)
+
+	rows, err := self.db.NamedQuery(query, map[string]interface{}(params))
+
+	if err != nil {
+		return err
+	}
+
+	defer rows.Close()
+
+	return sqlx.StructScan(rows, ents)
 }
 
-func (self commonPersister) getById(ent entity.Entity, id int64) error {
+func (self commonPersister) getOne(ent entity.Entity, where string, params QueryParameters) error {
 	var (
 		table   = entity.GetDbTable(self.entityType)
 		columns = entity.GetDbColumns(self.entityType)
 	)
 
-	query := "SELECT e." + strings.Join(columns, ", e.") + " FROM " + table + " AS e WHERE e.id = $1"
+	if params == nil {
+		params = make(QueryParameters)
+	}
 
-	return self.db.Get(ent, query, id)
+	query := "SELECT e." + strings.Join(columns, ", e.") + " FROM " + table + " AS e " + where + " LIMIT 1"
+
+	//log.Println(query)
+
+	rows, err := self.db.NamedQuery(query, map[string]interface{}(params))
+
+	if err != nil {
+		return err
+	}
+
+	defer rows.Close()
+
+	next := rows.Next()
+
+	if !next {
+		return NotFoundError{}
+	}
+
+	return rows.StructScan(ent)
 }
 
-func (self commonPersister) insert(ent entity.Entity) error {
+func (self commonPersister) insert(ent entity.Entity) (int64, error) {
 	var (
 		table   = entity.GetDbTable(self.entityType)
 		columns = entity.GetDbColumns(self.entityType)
@@ -74,16 +128,20 @@ func (self commonPersister) insert(ent entity.Entity) error {
 	r, err := self.db.NamedQuery(query, ent)
 
 	if err != nil {
-		return err
+		return -1, err
 	}
 
 	r.Next()
-	r.Scan(&id)
+
+	err = r.Scan(&id)
+
+	if err != nil {
+		return -1, err
+	}
+
 	r.Close()
 
-	ent.SetId(id)
-
-	return nil
+	return id, nil
 }
 
 func (self commonPersister) update(ent entity.Entity) error {

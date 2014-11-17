@@ -103,3 +103,17 @@ To undo this migration:
 ```bash
 goose down
 ```
+
+Yeoman Generator
+----------------
+
+Quickly create entities using the Yeoman generator.
+
+First do this once:
+
+```bash
+npm -g install yeoman
+npm link generator
+```
+
+Then just type `yo` to run the generator.

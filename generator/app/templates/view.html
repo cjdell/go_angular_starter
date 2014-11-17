@@ -1,0 +1,19 @@
+<div class="form-container <%= entityNameSingularSnakeCase %>-form">
+    <div class="form-header parent-width scroll-fixed">
+        <h1 class="form-title">{{record.Id ? record.Name : '[New <%= entityNameSingularPascalCase %>]'}}</h1>
+
+        <div class="form-buttons">
+            <button class="new-button pure-button" ng-click="new()">New</button>
+            <button class="save-button pure-button" ng-class="saveClass" ng-click="save()">Save</button>
+            <button class="delete-button pure-button" ng-click="delete()">Delete</button>
+        </div>
+    </div>
+
+    <form class="pure-form" name="entityForm">
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="name-input">Name</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="name-input" type="text" placeholder="Name" ng-model="record.Name" required>
+        </div>
+    </form>
+
+</div>

@@ -1,0 +1,72 @@
+<div class="form-container product-form">
+
+    <div class="form-header parent-width scroll-fixed">
+        <h1 class="form-title">{{record.Id ? record.Name : '[New product]'}}</h1>
+
+        <div class="form-buttons">
+            <button class="new-button pure-button" ng-click="new()">New</button>
+            <button class="save-button pure-button" ng-class="saveClass" ng-click="save()">Save</button>
+            <button class="delete-button pure-button" ng-click="delete()">Delete</button>
+        </div>
+    </div>
+
+    <form class="pure-form with-form-header" name="productForm">
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="name-input">Name</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="name-input" type="text" placeholder="Title" ng-model="record.Name" required>
+        </div>
+
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="handle-input">Handle</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="handle-input" type="text" placeholder="Handle" ng-model="record.Handle" required>
+        </div>
+
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="price-input">Price</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="price-input" type="number" placeholder="Price" ng-model="record.Price">
+        </div>
+
+        <div class="pure-g">
+            <div class="pure-u-1">
+                <h2>Description</h2>
+                <textarea  placeholder="Description" ng-model="record.Description" rows="5" tiny-mce></textarea>
+            </div>
+        </div>
+
+        <div class="pure-g">
+            <div class="pure-u-1">
+                <h2>Categories</h2>
+                <div category-field="record.Categories" category-mode="many"></div>
+            </div>
+        </div>
+
+        <div class="pure-g">
+            <div class="pure-u-1">
+                <h2>Images</h2>
+
+                <div class="pure-g">
+                    <div class="pure-u-1-2">
+                        <div class="" file-upload="newImage"></div>
+                    </div>
+                    <select ng-model="newImageHandle" class="pure-u-1-2" ng-init="newImageHandle = 'primary_image'">
+                        <option value="primary_image">Primary Image</option>
+                        <option value="secondary_image">Secondary Image</option>
+                    </select>
+                </div>
+
+                <div ng-repeat="image in record.Images" class="image">
+                    <div class="pure-g">
+                        <div class="pure-u-1 pure-u-md-1-4 thumb">
+                            <img ng-src="{{image.Thumbs.SmallSrc}}" alt="{{image.Desc}}" />
+                        </div>
+                        <div class="pure-u-1 pure-u-md-3-4">
+                            <h3>{{image.Name}}</h3>
+                            <textarea ng-model="image.Desc" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

@@ -1,84 +1,79 @@
 package api
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-	"errors"
-	"github.com/jmoiron/sqlx"
-	"github.com/cjdell/go_angular_starter/model/entity"
+	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/cjdell/go_angular_starter/model/persister"
 	"github.com/cjdell/go_angular_starter/services"
-	"math/rand"
+	"github.com/jmoiron/sqlx"
+	"log"
 	"net/http"
-	"strconv"
-	"time"
 )
 
-type AuthApi struct {
-	db               persister.DB
-	persister        *persister.UserPersister
-	sessionPersister *persister.SessionPersister
-}
+type (
+	authApi struct{}
 
-func NewAuthApi(db *sqlx.DB) *AuthApi {
-	authService := &AuthApi{}
+	authRequest  struct{ *rest.Request }
+	authResponse struct{ rest.ResponseWriter }
 
-	authService.db = db
-	authService.persister = persister.NewUserPersister(db)
-	authService.sessionPersister = persister.NewSessionPersister(db)
+	authAction func(*services.AuthService, authResponse, authRequest) error
+)
 
-	return authService
-}
+func NewAuthApi(db *sqlx.DB) http.Handler {
+	api := authApi{}
 
-type AuthSignInArgs struct {
-	Email    string
-	Password string
-}
+	handler := &rest.ResourceHandler{}
 
-type AuthSignInReply struct {
-	ApiKey string
-}
+	wrap := func(action authAction, db *sqlx.DB) rest.HandlerFunc {
+		return transactionWrap(db, func(w rest.ResponseWriter, r *rest.Request, db persister.DB) error {
+			service := services.NewAuthService(db)
 
-func (self *AuthApi) SignIn(r *http.Request, args *AuthSignInArgs, reply *AuthSignInReply) error {
-	hasher := md5.New()
-	hasher.Write([]byte(args.Password))
-	hash := hex.EncodeToString(hasher.Sum(nil))
-
-	user, err := self.persister.GetByEmailAndHash(args.Email, hash)
-
-	if user == nil {
-		return errors.New("User not found")
+			return action(service, authResponse{w}, authRequest{r})
+		})
 	}
 
-	rand.Seed(time.Now().UTC().UnixNano())
+	err := handler.SetRoutes(
+		&rest.Route{"POST", "/sign-in", wrap(authAction(api.signIn), db)},
+		&rest.Route{"POST", "/sign-up", wrap(authAction(api.signUp), db)},
+	)
 
-	// Generate an API key, this could probably be written better
-	hasher = md5.New()
-	hasher.Write([]byte(user.Email))
-	hasher.Write([]byte(args.Password))
-	hasher.Write([]byte(strconv.FormatInt(rand.Int63(), 10)))
-	reply.ApiKey = hex.EncodeToString(hasher.Sum(nil))
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	session := &entity.Session{}
-	session.UserId = user.Id
-	session.ApiKey = reply.ApiKey
-	self.sessionPersister.Insert(session)
+	return handler
+}
+
+func (authApi) signIn(service *services.AuthService, res authResponse, req authRequest) error {
+	sireq := req.SignInRequest()
+
+	result, err := service.SignIn(sireq.Email, sireq.Password)
 
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return res.WriteJson(result)
 }
 
-type AuthRegisterArgs struct {
+func (authApi) signUp(service *services.AuthService, res authResponse, req authRequest) error {
+	sireq := req.SignInRequest()
+
+	_, err := service.RegisterUser(sireq.Email, sireq.Password)
+
+	return err
+}
+
+type signInRequest struct {
 	Email    string
 	Password string
 }
 
-type AuthRegisterReply struct {
-}
+func (req authRequest) SignInRequest() *signInRequest {
+	sireq := &signInRequest{}
 
-func (self *AuthApi) Register(r *http.Request, args *AuthRegisterArgs, reply *AuthRegisterReply) error {
-	return services.RegisterUser(self.db, args.Email, args.Password)
+	if err := req.DecodeJsonPayload(&sireq); err != nil {
+		panic(err)
+	}
+
+	return sireq
 }

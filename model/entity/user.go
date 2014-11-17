@@ -6,7 +6,7 @@ type User struct {
 	Id    int64  `db:"id"`
 	Name  string `db:"name"`
 	Email string `db:"email"`
-	Hash  string `db:"hash"`
+	Hash  string `db:"hash" json:"-"`
 }
 
 func (self User) GetId() int64 {
@@ -15,4 +15,11 @@ func (self User) GetId() int64 {
 
 func (self *User) SetId(id int64) {
 	self.Id = id
+}
+
+func (self *User) Merge(update *User, fields []string) error {
+	self.Name = update.Name
+	self.Email = update.Email
+
+	return nil
 }

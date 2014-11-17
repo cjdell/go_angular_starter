@@ -1,10 +1,14 @@
 {
   "name": "go_angular_starter",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Go Angular Starter",
+  "main": "web/index.php",
   "license": "WTFPL (Do What The Fuck You Want To Public License)",
   "private": true,
   "dependencies": {
-    "pure": "~0.5.0"
+    "pure": "~0.5.0",
+    "tinymce": "~4.1.6",
+    "observe-js": "~0.4.2",
+    "compass-mixins": "~1.0.2"
   }
 }

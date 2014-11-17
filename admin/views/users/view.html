@@ -1,0 +1,28 @@
+<div class="form-container user-form">
+
+    <div class="form-header parent-width scroll-fixed">
+        <h1 class="form-title">{{record.Id ? record.Name : '[New user]'}}</h1>
+
+        <div class="form-buttons">
+            <button class="new-button pure-button" ng-click="new()">New</button>
+            <button class="save-button pure-button" ng-class="saveClass" ng-click="save()">Save</button>
+            <button class="delete-button pure-button" ng-click="delete()">Delete</button>
+        </div>
+    </div>
+
+    <form class="pure-form with-form-header" name="userForm">
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="name-input">Name</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="name-input" type="text" placeholder="Name" ng-model="record.Name" required>
+        </div>
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="email-input">Email</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="email-input" type="text" placeholder="Email" ng-model="record.Email" required>
+        </div>
+        <div class="pure-g">
+            <label class="pure-u-1 pure-u-md-1-4" for="type-input">Type</label>
+            <input class="pure-u-1 pure-u-md-3-4" id="type-input" type="text" placeholder="Type" ng-model="record.Type" required>
+        </div>
+    </form>
+
+</div>

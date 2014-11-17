@@ -3,6 +3,7 @@ package persister
 import (
 	"github.com/cjdell/go_angular_starter/model/entity"
 	"reflect"
+	"strings"
 )
 
 type CategoryPersister struct {
@@ -15,31 +16,26 @@ func NewCategoryPersister(db DB) *CategoryPersister {
 	return &CategoryPersister{db, &commonPersister{db, entityType}}
 }
 
-func (self CategoryPersister) GetAll() ([]*entity.Category, error) {
+func (self CategoryPersister) GetAll(parentId *int64, limit *Limit) ([]*entity.Category, error) {
 	categories := []*entity.Category{}
 
-	err := self.common.getAll(&categories, "")
+	where := []string{"1 = 1"}
+	params := make(QueryParameters)
 
-	return categories, err
-}
+	if parentId != nil {
+		where = append(where, "parent_id = :parent_id")
+		params["parent_id"] = parentId
+	}
 
-func (self CategoryPersister) GetChildren(parentId int64) ([]*entity.Category, error) {
-	categories := []*entity.Category{}
-
-	err := self.common.getAll(&categories, "parent_id = $1", parentId)
-
-	return categories, err
+	return categories, self.common.getAll(&categories, limit, "WHERE "+strings.Join(where, " AND "), params)
 }
 
 func (self CategoryPersister) GetById(id int64) (*entity.Category, error) {
 	category := &entity.Category{}
-
-	err := self.common.getById(category, id)
-
-	return category, err
+	return category, self.common.getOne(category, "WHERE id = :id", NewQueryParametersWithId(id))
 }
 
-func (self CategoryPersister) Insert(category *entity.Category) error {
+func (self CategoryPersister) Insert(category *entity.Category) (int64, error) {
 	return self.common.insert(category)
 }
 
@@ -49,4 +45,13 @@ func (self CategoryPersister) Update(category *entity.Category) error {
 
 func (self CategoryPersister) Delete(id int64) error {
 	return self.common.delete(id)
+}
+
+func (self CategoryPersister) GetByHandle(handle string) (*entity.Category, error) {
+	category := &entity.Category{}
+
+	params := QueryParameters{}
+	params["handle"] = handle
+
+	return category, self.common.getOne(category, "WHERE handle = :handle", params)
 }

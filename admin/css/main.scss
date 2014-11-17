@@ -1,0 +1,478 @@
+@import "./lib/ngDialog";
+@import "./lib/ngDialog-theme-plain";
+
+/* Elements
+================================================================================================================================ */
+body {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #1b98f8;
+}
+
+body > div {
+    height: 100vh;
+    max-height: 100vh;
+}
+
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+}
+
+h1.logo {
+    margin: 20px 0;
+}
+
+.parent-width {
+    box-sizing: border-box;
+}
+
+.scroll-fixed {
+    &.fixed {
+        position: fixed;
+        top: 0;
+        z-index: 10;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.ngdialog {
+    h3 {
+        margin-top: 0;
+    }
+}
+
+/* Category selection dialog
+================================================================================================================================ */
+.select-category-dialog {
+    .ngdialog-content {
+        overflow: hidden;
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                border-bottom: solid 1px #bbb;
+                line-height: 32px;
+                display: block;
+                color: #000;
+                position: relative;
+
+                a.next-level {
+                    float: right;
+                    margin: 0 24px 0 0;
+                }
+
+                /* Arrow stuff */
+                &:after, &:before {
+                    width: 6px;
+                    height: 8px;
+                    right: 100%;
+                    border-left: 1px solid black;
+                    border-right: 1px solid black;
+                    content: "";
+                    position: absolute;
+                    pointer-events: none;
+                    right: 7px;
+                }
+
+                &:after {
+                    -webkit-transform: skew(-135deg);
+                    top: 8px;
+
+                }
+                &:before {
+                    -webkit-transform: skew(135deg);
+                    top: 16px;
+                }
+            }
+        }
+    }
+}
+
+/* Attribute selection dialog
+================================================================================================================================ */
+.select-attribute-dialog {
+    .ngdialog-content {
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                border-bottom: solid 1px #bbb;
+                line-height: 32px;
+
+                a.select {
+                    float: right;
+                }
+            }
+        }
+    }
+}
+
+/* ngRepeat animation
+================================================================================================================================ */
+.animate.ng-enter, .animate.ng-leave {
+    transition: 250ms ease-in all;
+}
+
+.animate.ng-enter {
+    transform: translate3d(100%, 0, 0);
+}
+.animate.ng-leave {
+    transform: translate3d(0, 0, 0);
+    position: absolute;
+    width: 100%;
+}
+.animate.ng-enter.ng-enter-active {
+    transform: translate3d(0, 0, 0);
+}
+.animate.ng-leave.ng-leave-active {
+    transform: translate3d(-100%, 0, 0);
+}
+
+/* Category field
+================================================================================================================================ */
+.category-field {
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            margin: 8px 0 0 0;
+            line-height: 32px;
+            padding: 0 10px;
+            border: solid 1px #ddd;
+            border-radius: 10px;
+
+            .delete {
+                color: #d00;
+            }
+        }
+    }
+}
+
+/* Buttons
+================================================================================================================================ */
+.pure-button {
+    border-radius: 10px;
+
+    &.new-button {
+        background: #fff;
+        border: 1px solid #ddd;
+        color: #666;
+    }
+    &.save-button {
+        color: #fff;
+        background: #1b98f8;
+    }
+    &.delete-button {
+        color: #fff;
+        background: #d01b1b;
+    }
+
+    &.back-button {
+        float: left;
+    }
+    &.next-button {
+        color: #fff;
+        background: #1b98f8;
+    }
+}
+
+/* Regions
+================================================================================================================================ */
+#menu {
+    &,
+    a {
+        color: #fff;
+    }
+    ul {
+        background: #999;
+        list-style: none;
+        padding: 16px;
+        margin: 0;
+
+        li {
+            line-height: 32px;
+
+            .count {
+                color: #000;
+            }
+        }
+    }
+
+    .signed-in-message {
+        margin-bottom: 0;
+    }
+}
+
+#main {
+
+}
+
+#list {
+
+}
+
+#content {
+
+}
+
+.narrow-layout > div {
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+#records-layout {
+    #menu {
+
+    }
+
+    [ui-view] {
+        display: flex;
+        display: -webkit-flex;
+
+        flex-direction: column;
+        -webkit-flex-direction: column;
+
+        #list {
+            flex: 1;
+            -webkit-flex: 1;
+        }
+
+        #content {
+            flex: 1;
+            -webkit-flex: 1;
+        }
+    }
+}
+
+/* Item list
+================================================================================================================================ */
+.item-list {
+    background: #ccc;
+
+    .item {
+        padding: 16px;
+        border-bottom: solid 1px #999;
+        overflow: hidden;
+
+        .thumb {
+            float: left;
+            margin-right: 12px;
+            padding: 12px;
+            border: solid 1px #999;
+            border-radius: 4px;
+            background: #fff;
+
+            img {
+                display: block;
+            }
+        }
+
+        &:hover {
+            background: #ddd;
+        }
+
+        & > * {
+            line-height: 32px;
+            margin: 0;
+        }
+    }
+}
+
+/* Forms
+================================================================================================================================ */
+.form-container {
+    position: relative;
+
+    .form-header {
+        padding: 0 12px;
+        background: rgba(0,0,0,0.3);
+        border-bottom: solid 1px rgba(0,0,0,0.6);
+        height: 56px;
+
+        .form-title {
+            position: absolute;
+            color: #fff;
+            font-size: 16px;
+            margin: 0;
+            line-height: 56px;
+        }
+
+        .form-buttons {
+            float: right;
+
+            .pure-button {
+
+            }
+
+            .save-button {
+                transition: none;
+                transform: rotate(0deg);
+            }
+            .save-button.saving {
+                background: #777;
+            }
+            .save-button.saved {
+                transition: all 1s;
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    &.has-floated {
+        padding-top: 56px;
+    }
+
+    .pure-form.with-form-header {
+        padding: 12px
+    }
+
+    h2 {
+        margin: 8px 0 8px 0;
+        padding: 0 0 8px 0;
+        border-bottom: solid 1px #eee;
+        font-size: 20px;
+    }
+
+    .form-buttons {
+        margin: 10px 0;
+        text-align: right;
+    }
+
+    input.ng-invalid {
+        background: #fee;
+    }
+
+    .pure-form .pure-g {
+        margin-bottom: 0.5em;
+
+        label {
+            line-height: 36px;
+            box-sizing: border-box;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    .validation-hint {
+        color: #d00;
+    }
+}
+
+/* Product form
+================================================================================================================================ */
+.product-form {
+    .image {
+        margin: 12px 0;
+
+        .thumb {
+            text-align: center;
+
+            img {
+                max-width: 100%;
+            }
+        }
+
+        h3 {
+            margin-top: 0;
+        }
+
+        select {
+            height: 36px;
+            margin: 0 0 12px 0;
+        }
+
+        textarea {
+            width: 100%;
+        }
+    }
+}
+
+.attributes-list {
+
+}
+
+/* Tablet+ media queries
+================================================================================================================================ */
+@media (min-width: 480px) {
+
+}
+
+/* Desktop+ media queries
+================================================================================================================================ */
+@media (min-width: 768px) {
+    /* Re-enable list view for larger devices */
+    body.records--products--view #list {
+        // display: block;
+    }
+
+    .pure-form .pure-g label {
+        text-align: right;
+        padding-right: 1em;
+    }
+
+    #menu {
+        height: 100vh;
+
+        & > * {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+        }
+    }
+
+    #list {
+        & > * {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            overflow: auto;
+        }
+    }
+
+    #records-layout {
+        display: flex;
+        display: -webkit-flex;
+
+        flex-direction: row;
+        -webkit-flex-direction: row;
+
+        #menu {
+            flex: 1;
+            -webkit-flex: 1;
+        }
+
+        [ui-view] {
+            flex-direction: row;
+            -webkit-flex-direction: row;
+
+            flex: 6;
+            -webkit-flex: 6;
+
+            #list {
+                flex: 1;
+                -webkit-flex: 1;
+            }
+
+            #content {
+                flex: 2;
+                -webkit-flex: 2;
+            }
+        }
+    }
+}

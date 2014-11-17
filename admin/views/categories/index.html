@@ -1,0 +1,11 @@
+<div id="list" class="">
+    <div class="item-list parent-width scroll-container">
+        <div class="item" ng-repeat="record in records" ui-sref="records.categories.view({ id: record.Id })">
+            <h4 class="item-title">{{record.FqName}}</h4>
+        </div>
+    </div>
+</div>
+
+<div id="content" class="">
+    <ui-view></ui-view>
+</div>

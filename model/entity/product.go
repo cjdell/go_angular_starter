@@ -1,7 +1,7 @@
 package entity
 
 import (
-	//"log"
+	"github.com/kennygrant/sanitize"
 	"strconv"
 	"strings"
 )
@@ -14,6 +14,7 @@ type Product struct {
 	Name        string  `db:"name"`
 	Description string  `db:"description"`
 	Price       float64 `db:"price"`
+	Handle      string  `db:"handle"`
 }
 
 func (Product) GetTypeName() string {
@@ -28,10 +29,14 @@ func (self *Product) SetId(id int64) {
 	self.Id = id
 }
 
-func (self *Product) Update(update *Product) {
+func (self *Product) Merge(update *Product, fields []string) error {
+	self.CategoryIds = update.CategoryIds
 	self.Name = update.Name
 	self.Description = update.Description
 	self.Price = update.Price
+	self.Handle = update.Handle
+
+	return nil
 }
 
 func (self *Product) GetCategoryIds() []int64 {
@@ -51,14 +56,6 @@ func (self *Product) GetCategoryIds() []int64 {
 	return ids
 }
 
-//func (self *Product) SetCategoryIds(ids []int64) {
-//	idsStr := make([]string, len(ids))
-
-//	for i, id := range ids {
-//		idsStr[i] = strconv.FormatInt(id, 10)
-//	}
-
-//	self.CategoryIds = "{" + strings.Join(idsStr, ",") + "}"
-
-//	//log.Println(self.CategoryIds)
-//}
+func (self *Product) GenerateHandle() {
+	self.Handle = sanitize.Path(self.Name)
+}

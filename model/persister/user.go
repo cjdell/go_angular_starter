@@ -1,10 +1,7 @@
 package persister
 
 import (
-	"database/sql"
-	//	"github.com/jmoiron/sqlx"
 	"github.com/cjdell/go_angular_starter/model/entity"
-	"log"
 	"reflect"
 )
 
@@ -18,23 +15,17 @@ func NewUserPersister(db DB) *UserPersister {
 	return &UserPersister{db, &commonPersister{db, entityType}}
 }
 
-func (self UserPersister) GetAll() ([]*entity.User, error) {
+func (self UserPersister) GetAll(limit *Limit) ([]*entity.User, error) {
 	users := []*entity.User{}
-
-	err := self.common.getAll(&users, "")
-
-	return users, err
+	return users, self.common.getAll(&users, limit, "", nil)
 }
 
 func (self UserPersister) GetById(id int64) (*entity.User, error) {
 	user := &entity.User{}
-
-	err := self.common.getById(user, id)
-
-	return user, err
+	return user, self.common.getOne(user, "WHERE id = :id", NewQueryParametersWithId(id))
 }
 
-func (self UserPersister) Insert(user *entity.User) error {
+func (self UserPersister) Insert(user *entity.User) (int64, error) {
 	return self.common.insert(user)
 }
 
@@ -47,33 +38,20 @@ func (self UserPersister) Delete(id int64) error {
 }
 
 func (self UserPersister) GetByEmailAndHash(email string, hash string) (*entity.User, error) {
-	log.Printf("email %s, hash %s", email, hash)
-
-	query := "SELECT * FROM users WHERE email = $1 AND hash = $2"
-
 	user := &entity.User{}
-	err := self.db.Get(user, query, email, hash)
 
-	if err != nil {
-		return nil, err
-	}
+	params := QueryParameters{}
+	params["email"] = email
+	params["hash"] = hash
 
-	return user, nil
+	return user, self.common.getOne(user, "WHERE email = :email AND hash = :hash", params)
 }
 
 func (self UserPersister) GetByApiKey(apiKey string) (*entity.User, error) {
-	query := "SELECT u.* FROM users AS u INNER JOIN sessions AS s ON u.id = s.user_id WHERE s.api_key = $1"
-
 	user := &entity.User{}
-	err := self.db.Get(user, query, apiKey)
 
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
+	params := QueryParameters{}
+	params["api_key"] = apiKey
 
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return user, self.common.getOne(user, "INNER JOIN sessions AS s ON e.id = s.user_id WHERE s.api_key = :api_key", params)
 }

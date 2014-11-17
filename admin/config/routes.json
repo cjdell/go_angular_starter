@@ -1,0 +1,84 @@
+{
+  "auth": {
+    "abstract": true,
+    "templateUrl": "views/layouts/auth.html",
+    "url": "/auth"
+  },
+  "auth.register": {
+    "controller": "RegisterController",
+    "templateUrl": "views/auth/register.html",
+    "url": "/register"
+  },
+  "auth.sign-in": {
+    "controller": "SignInController",
+    "templateUrl": "views/auth/sign-in.html",
+    "url": "/sign-in/:attemptedStateName/:attemptedStateParams"
+  },
+  "dashboard": {
+    "templateUrl": "views/dashboard/index.html",
+    "url": "/"
+  },
+  "records": {
+    "abstract": true,
+    "allow": ["Admin", "Business"],
+    "templateUrl": "views/layouts/records.html",
+    "url": "/records"
+  },
+  "records.products": {
+    "abstract": true,
+    "allow": ["Admin", "Business"],
+    "controller": "ProductsController",
+    "templateUrl": "views/products/index.html",
+    "url": "/products"
+  },
+  "records.products.new": {
+    "allow": ["Admin", "Business"],
+    "controller": "ProductController",
+    "templateUrl": "views/products/view.html",
+    "url": "/new"
+  },
+  "records.products.view": {
+    "allow": ["Admin", "Business"],
+    "controller": "ProductController",
+    "templateUrl": "views/products/view.html",
+    "url": "/{id:[0-9]+}"
+  },
+  "records.users": {
+    "abstract": true,
+    "allow": ["Admin"],
+    "controller": "UsersController",
+    "templateUrl": "views/users/index.html",
+    "url": "/users"
+  },
+  "records.users.new": {
+    "allow": ["Admin"],
+    "controller": "UserController",
+    "templateUrl": "views/users/view.html",
+    "url": "/new"
+  },
+  "records.users.view": {
+    "allow": ["Admin"],
+    "controller": "UserController",
+    "templateUrl": "views/users/view.html",
+    "url": "/{id:[0-9]+}"
+  },
+  "records.categories": {
+    "abstract": true,
+    "allow": ["Admin"],
+    "controller": "CategoriesController",
+    "templateUrl": "views/categories/index.html",
+    "url": "/categories"
+  },
+  "records.categories.new": {
+    "allow": ["Admin"],
+    "controller": "CategoryController",
+    "templateUrl": "views/categories/view.html",
+    "url": "/new"
+  },
+  "records.categories.view": {
+    "allow": ["Admin"],
+    "controller": "CategoryController",
+    "templateUrl": "views/categories/view.html",
+    "url": "/{id:[0-9]+}"
+  }
+}

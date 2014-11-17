@@ -2,96 +2,88 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/rpc"
-	"github.com/gorilla/rpc/json"
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"github.com/cjdell/go_angular_starter/api"
 	"github.com/cjdell/go_angular_starter/config"
 	"github.com/cjdell/go_angular_starter/handlers"
+	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
-	"os"
-	"path"
 )
 
 func main() {
 	db, err := openDatabase()
 
-	checkErr(err, "Could not open database. %s")
+	if err != nil {
+		log.Fatalf("Could not open database. %s", err)
+	}
 
 	startServer(db)
 }
 
 func openDatabase() (*sqlx.DB, error) {
-	drv, open, err := config.App.DatabaseConfig()
-
-	checkErr(err, "Could not find database config. %s")
-
-	db, err := sqlx.Open(drv, open)
+	db, err := sqlx.Open(config.App.DatabaseDriver, config.App.DatabaseOpen)
 
 	return db, err
 }
 
 func startServer(db *sqlx.DB) {
-	fmt.Printf("Using web root dir: %s\n", config.App.WebRoot())
-	fmt.Printf("Using ENV: %s\n", config.App.Env())
+	http.Handle("/auth/", http.StripPrefix("/auth", api.NewAuthApi(db)))
 
-	staticHandler := http.FileServer(http.Dir(config.App.WebRoot()))
+	// ----------------------------------------------------------------
 
-	// Configure JSON-RPC based API (For auth, doesn't require authentication)
-	authApiServer := rpc.NewServer()
+	apiRouter := mux.NewRouter()
 
-	authApiServer.RegisterCodec(json.NewCodec(), "application/json")
-	authApiServer.RegisterService(api.NewAuthApi(db), "")
+	productApi := http.StripPrefix("/products", api.NewProductApi(db))
 
-	http.Handle("/auth", authApiServer)
+	apiRouter.Handle("/products", productApi)
+	apiRouter.Handle("/products/{id:[0-9]+}", productApi)
 
-	// Configure JSON-RPC based API (For everything else, requires API Key)
-	apiServer := rpc.NewServer()
+	categoryApi := http.StripPrefix("/categories", api.NewCategoryApi(db))
 
-	apiServer.RegisterCodec(json.NewCodec(), "application/json")
-	apiServer.RegisterService(api.NewUserApi(db), "")
-	apiServer.RegisterService(api.NewProductApi(db), "")
-	apiServer.RegisterService(api.NewCategoryApi(db), "")
+	apiRouter.Handle("/categories", categoryApi)
+	apiRouter.Handle("/categories/{id:[0-9]+}", categoryApi)
 
-	// Firewall the API to only authenticated users
-	http.Handle("/api", handlers.CheckUser(apiServer, db))
+	userApi := http.StripPrefix("/users", api.NewUserApi(db))
+
+	apiRouter.Handle("/users", userApi)
+	apiRouter.Handle("/users/{id:[0-9]+}", userApi)
+
+	// GENERATOR INJECT
+
+	http.Handle("/api/", http.StripPrefix("/api", handlers.CheckUser(apiRouter, db, false)))
+
+	// ----------------------------------------------------------------
 
 	// Configure handlers
-	dynamicHandler := http.NewServeMux()
+	dynamicHandler := mux.NewRouter()
 
-	dynamicHandler.HandleFunc("/", handlers.HomeHandler(db))
-	dynamicHandler.HandleFunc("/test", handlers.TestHandler)
-	dynamicHandler.HandleFunc("/upload", handlers.UploadHandler)
+	appHandlers := handlers.NewAppHandlers(db)
 
-	// Merge the two handlers for the root path
-	http.Handle("/", MergeHandlers(staticHandler, dynamicHandler))
+	dynamicHandler.Handle("/", appHandlers.HomeHandler())
+	dynamicHandler.Handle("/test", appHandlers.TestHandler())
+	dynamicHandler.Handle("/upload", appHandlers.UploadHandler())
+	dynamicHandler.Handle("/{handle}", appHandlers.HomeHandler())
+	dynamicHandler.Handle("/product/{handle}", appHandlers.ProductHandler())
 
-	err := http.ListenAndServe(":3000", nil)
+	http.Handle("/", dynamicHandler)
 
-	checkErr(err, "Could not start HTTP server. %s")
-}
+	// ----------------------------------------------------------------
 
-func checkErr(err error, msg string) {
+	assetHandler := http.FileServer(http.Dir(config.App.AssetRoot))
+	http.Handle("/assets/", http.StripPrefix("/assets/", assetHandler))
+
+	adminHandler := http.FileServer(http.Dir(config.App.AdminRoot))
+	http.Handle("/admin/", http.StripPrefix("/admin/", adminHandler))
+
+	// ----------------------------------------------------------------
+
+	fmt.Printf("Starting server on port %s using Env: %s\n", config.App.ListenAddress, config.App.Env())
+
+	err := http.ListenAndServe(config.App.ListenAddress, nil)
+
 	if err != nil {
-		log.Fatalf(msg, err)
+		log.Fatalf("Could not start HTTP server. %s", err)
 	}
-}
-
-// This function allows handlers to co-exist on the "/" path. URLs that don't match files are assumed to be destined for handlers. TODO: Improve this...
-func MergeHandlers(staticHandler http.Handler, dynamicHandler *http.ServeMux) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		assetPath := path.Join(config.App.WebRoot(), r.URL.Path)
-
-		log.Printf("Asset path: %s", assetPath)
-
-		if _, err := os.Stat(assetPath); os.IsNotExist(err) || r.URL.Path == "/" {
-			log.Printf("DYNAMIC")
-			dynamicHandler.ServeHTTP(w, r)
-		} else {
-			log.Printf("STATIC")
-			staticHandler.ServeHTTP(w, r)
-		}
-	})
 }

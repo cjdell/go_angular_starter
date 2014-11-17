@@ -1,0 +1,8 @@
+all:
+  asset_root: assets
+  admin_root: admin
+  template_root: templates
+
+development:
+  listen_address: :3000
+

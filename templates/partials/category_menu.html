@@ -1,0 +1,17 @@
+{{ define "category_menu" }}
+
+<ul class="category-menu">
+	<li>
+		<a href="/">Home</a>
+	</li>
+	{{ range .Categories }}
+	<li>
+		<a href="/{{ .Handle }}">{{ .Name }}</a>
+	</li>
+	{{ end }}
+  <li>
+    <a href="/admin">Admin Panel</a>
+  </li>
+</ul>
+
+{{ end }}
