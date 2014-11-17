@@ -20,25 +20,25 @@
   },
   "records": {
     "abstract": true,
-    "allow": ["Admin", "Business"],
+    "allow": ["Admin"],
     "templateUrl": "views/layouts/records.html",
     "url": "/records"
   },
   "records.products": {
     "abstract": true,
-    "allow": ["Admin", "Business"],
+    "allow": ["Admin"],
     "controller": "ProductsController",
     "templateUrl": "views/products/index.html",
     "url": "/products"
   },
   "records.products.new": {
-    "allow": ["Admin", "Business"],
+    "allow": ["Admin"],
     "controller": "ProductController",
     "templateUrl": "views/products/view.html",
     "url": "/new"
   },
   "records.products.view": {
-    "allow": ["Admin", "Business"],
+    "allow": ["Admin"],
     "controller": "ProductController",
     "templateUrl": "views/products/view.html",
     "url": "/{id:[0-9]+}"

@@ -68,7 +68,7 @@ bower install
 Run the Gulp tasks (for Browserify / SASS compilation)
 
 ```bash
-gulp admin-watch  # Leave this running and open a new terminal
+gulp  # Leave this running and open a new terminal
 ```
 
 Run the HTTP server:
