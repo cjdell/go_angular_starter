@@ -41,23 +41,28 @@ app.directive('scrollContainer', require('./directives/scroll_container'));
 
 /* CONTROLLERS
 -------------------------------- */
-var AuthControllers = require('./controllers/auth'),
-  UserControllers = require('./controllers/user'),
-  ProductControllers = require('./controllers/product'),
-  CategoryControllers = require('./controllers/category');
+var AuthControllers = require('./controllers/auth');
 
 app.controller('SignInController', AuthControllers.SignInController);
 app.controller('RegisterController', AuthControllers.RegisterController);
 
+var UserControllers = require('./controllers/user');
+
 app.controller('UsersController', UserControllers.UsersController);
 app.controller('UserController', UserControllers.UserController);
+
+var ProductControllers = require('./controllers/product');
 
 app.controller('ProductsController', ProductControllers.ProductsController);
 app.controller('ProductController', ProductControllers.ProductController);
 
+var CategoryControllers = require('./controllers/category');
+
 app.controller('CategoriesController', CategoryControllers.CategoriesController);
 app.controller('CategoryController', CategoryControllers.CategoryController);
 app.controller('SelectCategoryController', CategoryControllers.SelectCategoryController);
+
+// GENERATOR INJECT
 
 app.run(require('./run/auth'));
 app.run(require('./run/item_count'));

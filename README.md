@@ -34,6 +34,7 @@ go get github.com/jmoiron/sqlx
 go get github.com/gorilla/rpc
 go get github.com/gorilla/context
 go get github.com/kylelemons/go-gypsy/yaml
+go get github.com/kennygrant/sanitize
 ```
 
 Set up the database. Out of the box a Postgres SQL database is expected to exist called "go_angular_starter" on the localhost, accessible by the current user. Change the configuration located at:

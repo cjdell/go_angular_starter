@@ -12,10 +12,6 @@ var ProductsController = ['$injector', '$scope', '$state', '$stateParams', 'Prod
       Api: ProductApi
     });
 
-    ctrl.paramsForLoad = {
-      owned_only: 1
-    };
-
     // Bootstrap the controller
     ctrl.init();
   }
@@ -34,7 +30,6 @@ var ProductController = ['$injector', '$scope', '$state', '$stateParams', 'Produ
     });
 
     $scope.$on('item-saving', (e, record, promises) => {
-      // record.Changes.AttributeStore = getAttributeStore();
       record.Changes.ImageChanges = getImageChanges();
 
       // Wait for new image if still uploading...

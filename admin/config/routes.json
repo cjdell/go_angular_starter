@@ -20,65 +20,110 @@
   },
   "records": {
     "abstract": true,
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "templateUrl": "views/layouts/records.html",
     "url": "/records"
   },
   "records.products": {
     "abstract": true,
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "ProductsController",
     "templateUrl": "views/products/index.html",
     "url": "/products"
   },
   "records.products.new": {
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "ProductController",
     "templateUrl": "views/products/view.html",
     "url": "/new"
   },
   "records.products.view": {
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "ProductController",
     "templateUrl": "views/products/view.html",
     "url": "/{id:[0-9]+}"
   },
   "records.users": {
     "abstract": true,
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "UsersController",
     "templateUrl": "views/users/index.html",
     "url": "/users"
   },
   "records.users.new": {
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "UserController",
     "templateUrl": "views/users/view.html",
     "url": "/new"
   },
   "records.users.view": {
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "UserController",
     "templateUrl": "views/users/view.html",
     "url": "/{id:[0-9]+}"
   },
   "records.categories": {
     "abstract": true,
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "CategoriesController",
     "templateUrl": "views/categories/index.html",
     "url": "/categories"
   },
   "records.categories.new": {
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "CategoryController",
     "templateUrl": "views/categories/view.html",
     "url": "/new"
   },
   "records.categories.view": {
-    "allow": ["Admin"],
+    "allow": [
+      "Admin"
+    ],
     "controller": "CategoryController",
     "templateUrl": "views/categories/view.html",
+    "url": "/{id:[0-9]+}"
+  },
+  "records.vogons": {
+    "abstract": true,
+    "allow": [
+      "Admin"
+    ],
+    "controller": "VogonsController",
+    "templateUrl": "views/vogons/index.html",
+    "url": "/vogons"
+  },
+  "records.vogons.new": {
+    "allow": [
+      "Admin"
+    ],
+    "controller": "VogonController",
+    "templateUrl": "views/vogons/view.html",
+    "url": "/new"
+  },
+  "records.vogons.view": {
+    "allow": [
+      "Admin"
+    ],
+    "controller": "VogonController",
+    "templateUrl": "views/vogons/view.html",
     "url": "/{id:[0-9]+}"
   }
 }
