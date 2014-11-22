@@ -27,6 +27,8 @@ app.factory('UserApi', require('./api/user'));
 app.factory('ProductApi', require('./api/product'));
 app.factory('CategoryApi', require('./api/category'));
 
+// GENERATOR INJECT API
+
 /* DIRECTIVES
 -------------------------------- */
 app.directive('match', require('./directives/match'));
@@ -62,7 +64,7 @@ app.controller('CategoriesController', CategoryControllers.CategoriesController)
 app.controller('CategoryController', CategoryControllers.CategoryController);
 app.controller('SelectCategoryController', CategoryControllers.SelectCategoryController);
 
-// GENERATOR INJECT
+// GENERATOR INJECT CTRL
 
 app.run(require('./run/auth'));
 app.run(require('./run/item_count'));

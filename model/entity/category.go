@@ -18,10 +18,6 @@ func (self *Category) GetId() int64 {
 	return self.Id
 }
 
-func (self *Category) SetId(id int64) {
-	self.Id = id
-}
-
 func (self *Category) Merge(update *Category, fields []string) error {
 	self.Name = update.Name
 

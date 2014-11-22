@@ -13,10 +13,6 @@ func (self User) GetId() int64 {
 	return self.Id
 }
 
-func (self *User) SetId(id int64) {
-	self.Id = id
-}
-
 func (self *User) Merge(update *User, fields []string) error {
 	self.Name = update.Name
 	self.Email = update.Email

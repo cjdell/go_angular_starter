@@ -25,10 +25,6 @@ func (self *Product) GetId() int64 {
 	return self.Id
 }
 
-func (self *Product) SetId(id int64) {
-	self.Id = id
-}
-
 func (self *Product) Merge(update *Product, fields []string) error {
 	self.CategoryIds = update.CategoryIds
 	self.Name = update.Name

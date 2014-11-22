@@ -13,10 +13,10 @@
             <li ng-show="canView('Category')">
                 <a ui-sref="records.categories.new">Categories<span class="count" ng-show="itemCounts.Category"> ({{itemCounts.Category}})</span></a>
             </li>
+            <!-- GENERATOR INJECT -->
             <li>
                 <p class="signed-in-message">Signed in as <strong>{{getUser().Name}} ({{getUser().Type}})</strong></p>
             </li>
-            <!-- GENERATOR INJECT -->
         </ul>
     </div>
 

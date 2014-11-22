@@ -100,30 +100,5 @@
     "controller": "CategoryController",
     "templateUrl": "views/categories/view.html",
     "url": "/{id:[0-9]+}"
-  },
-  "records.vogons": {
-    "abstract": true,
-    "allow": [
-      "Admin"
-    ],
-    "controller": "VogonsController",
-    "templateUrl": "views/vogons/index.html",
-    "url": "/vogons"
-  },
-  "records.vogons.new": {
-    "allow": [
-      "Admin"
-    ],
-    "controller": "VogonController",
-    "templateUrl": "views/vogons/view.html",
-    "url": "/new"
-  },
-  "records.vogons.view": {
-    "allow": [
-      "Admin"
-    ],
-    "controller": "VogonController",
-    "templateUrl": "views/vogons/view.html",
-    "url": "/{id:[0-9]+}"
   }
 }

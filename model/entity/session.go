@@ -16,7 +16,3 @@ type Session struct {
 func (self Session) GetId() int64 {
 	return self.Id
 }
-
-func (self *Session) SetId(id int64) {
-	self.Id = id
-}

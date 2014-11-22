@@ -19,16 +19,18 @@ func main() {
 		log.Fatalf("Could not open database. %s", err)
 	}
 
-	startServer(db)
+	err = startServer(db)
+
+	if err != nil {
+		log.Fatalf("Could not start HTTP server. %s", err)
+	}
 }
 
 func openDatabase() (*sqlx.DB, error) {
-	db, err := sqlx.Open(config.App.DatabaseDriver, config.App.DatabaseOpen)
-
-	return db, err
+	return sqlx.Open(config.App.DatabaseDriver, config.App.DatabaseOpen)
 }
 
-func startServer(db *sqlx.DB) {
+func startServer(db *sqlx.DB) error {
 	http.Handle("/auth/", http.StripPrefix("/auth", api.NewAuthApi(db)))
 
 	// ----------------------------------------------------------------
@@ -81,9 +83,5 @@ func startServer(db *sqlx.DB) {
 
 	fmt.Printf("Starting server on port %s using Env: %s\n", config.App.ListenAddress, config.App.Env())
 
-	err := http.ListenAndServe(config.App.ListenAddress, nil)
-
-	if err != nil {
-		log.Fatalf("Could not start HTTP server. %s", err)
-	}
+	return http.ListenAndServe(config.App.ListenAddress, nil)
 }

@@ -7,7 +7,6 @@ import (
 
 type Entity interface {
 	GetId() int64
-	SetId(id int64)
 }
 
 func GetDbTable(entityType reflect.Type) string {
