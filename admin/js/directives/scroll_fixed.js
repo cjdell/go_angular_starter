@@ -38,6 +38,7 @@ function getOffsetTop(elem) {
     if (!isNaN(elem.offsetTop)) {
       offsetTop += elem.offsetTop;
     }
-  } while (elem = elem.offsetParent);
+    elem = elem.offsetParent;
+  } while (elem);
   return offsetTop;
 }

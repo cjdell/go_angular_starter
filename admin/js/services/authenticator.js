@@ -10,12 +10,14 @@ module.exports = ['$http', 'AuthApi',
         return AuthApi.signIn(email, password).then(function(reply) {
           $http.defaults.headers.common['API-Key'] = reply.ApiKey;
 
-          return user = {
+          user = {
             ApiKey: reply.ApiKey,
             Email: reply.Email,
             Name: reply.Name,
             Type: reply.Type
           };
+
+          return user;
         });
       },
       signOut: function() {
