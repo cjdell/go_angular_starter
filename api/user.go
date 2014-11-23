@@ -108,8 +108,8 @@ func (req userRequest) Id() *int64 {
 	return pathInt(req.Request, "id")
 }
 
-func (req userRequest) User() *services.UserChanges {
-	user := &services.UserChanges{}
+func (req userRequest) User() *services.UserSave {
+	user := &services.UserSave{}
 
 	if err := req.DecodeJsonPayload(&user); err != nil {
 		panic(err)

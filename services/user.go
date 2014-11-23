@@ -16,7 +16,7 @@ type UserInfo struct {
 }
 
 // A struct to hold additional modifications that don't fit into the record data structure
-type UserChanges struct {
+type UserSave struct {
 	*entity.User
 
 	Changes struct {
@@ -56,32 +56,35 @@ func (self *UserService) GetOne(id int64) (*UserInfo, error) {
 	return self.userInfo(user)
 }
 
-func (self *UserService) Insert(userChanges *UserChanges) (*UserInfo, error) {
+func (self *UserService) Insert(userSave *UserSave) (*UserInfo, error) {
 	var err error
-	var id int64
 
-	if id, err = self.persister.Insert(userChanges.User); err != nil {
+	user := userSave.User
+
+	if err = self.beforeSave(user, userSave); err != nil {
 		return nil, err
 	}
 
-	userChanges.Id = id
-
-	if err = self.processChanges(userChanges); err != nil {
+	if user.Id, err = self.persister.Insert(user); err != nil {
 		return nil, err
 	}
 
-	return self.GetOne(id)
+	if err = self.afterSave(user, userSave); err != nil {
+		return nil, err
+	}
+
+	return self.GetOne(user.Id)
 }
 
-func (self *UserService) Update(userChanges *UserChanges) (*UserInfo, error) {
+func (self *UserService) Update(userSave *UserSave) (*UserInfo, error) {
 	var err error
 	var user *entity.User
 
-	if user, err = self.persister.GetById(userChanges.Id); err != nil {
+	if user, err = self.persister.GetById(userSave.Id); err != nil {
 		return nil, err
 	}
 
-	if err = user.Merge(userChanges.User, userChanges.Changes.Fields); err != nil {
+	if err = self.beforeSave(user, userSave); err != nil {
 		return nil, err
 	}
 
@@ -89,7 +92,7 @@ func (self *UserService) Update(userChanges *UserChanges) (*UserInfo, error) {
 		return nil, err
 	}
 
-	if err = self.processChanges(userChanges); err != nil {
+	if err = self.afterSave(user, userSave); err != nil {
 		return nil, err
 	}
 
@@ -105,7 +108,12 @@ func (self *UserService) userInfo(user *entity.User) (*UserInfo, error) {
 	return &UserInfo{user}, nil
 }
 
-// Process additional mutations that might exist i.e. an uploaded file
-func (self *UserService) processChanges(userChanges *UserChanges) error {
+// Handle UserSave - before saving to the database
+func (self *UserService) beforeSave(user *entity.User, userSave *UserSave) error {
+	return user.Merge(userSave.User, userSave.Changes.Fields)
+}
+
+// Handle UserSave - after saving to the database
+func (self *UserService) afterSave(user *entity.User, userSave *UserSave) error {
 	return nil
 }

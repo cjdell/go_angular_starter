@@ -19,7 +19,7 @@ type CategoryInfo struct {
 }
 
 // A struct to hold additional modifications that don't fit into the record data structure
-type CategoryChanges struct {
+type CategorySave struct {
 	*entity.Category
 
 	Changes struct {
@@ -59,32 +59,35 @@ func (self *CategoryService) GetOne(id int64) (*CategoryInfo, error) {
 	return self.categoryInfo(category)
 }
 
-func (self *CategoryService) Insert(categoryChanges *CategoryChanges) (*CategoryInfo, error) {
+func (self *CategoryService) Insert(categorySave *CategorySave) (*CategoryInfo, error) {
 	var err error
-	var id int64
 
-	if id, err = self.persister.Insert(categoryChanges.Category); err != nil {
+	category := categorySave.Category
+
+	if err = self.beforeSave(category, categorySave); err != nil {
 		return nil, err
 	}
 
-	categoryChanges.Id = id
-
-	if err = self.processChanges(categoryChanges); err != nil {
+	if category.Id, err = self.persister.Insert(category); err != nil {
 		return nil, err
 	}
 
-	return self.GetOne(id)
+	if err = self.afterSave(category, categorySave); err != nil {
+		return nil, err
+	}
+
+	return self.GetOne(category.Id)
 }
 
-func (self *CategoryService) Update(categoryChanges *CategoryChanges) (*CategoryInfo, error) {
+func (self *CategoryService) Update(categorySave *CategorySave) (*CategoryInfo, error) {
 	var err error
 	var category *entity.Category
 
-	if category, err = self.persister.GetById(categoryChanges.Id); err != nil {
+	if category, err = self.persister.GetById(categorySave.Id); err != nil {
 		return nil, err
 	}
 
-	if err = category.Merge(categoryChanges.Category, categoryChanges.Changes.Fields); err != nil {
+	if err = self.beforeSave(category, categorySave); err != nil {
 		return nil, err
 	}
 
@@ -92,7 +95,7 @@ func (self *CategoryService) Update(categoryChanges *CategoryChanges) (*Category
 		return nil, err
 	}
 
-	if err = self.processChanges(categoryChanges); err != nil {
+	if err = self.afterSave(category, categorySave); err != nil {
 		return nil, err
 	}
 
@@ -114,9 +117,14 @@ func (self *CategoryService) categoryInfo(category *entity.Category) (*CategoryI
 	return &CategoryInfo{category, parent}, nil
 }
 
-// Process additional mutations that might exist i.e. an uploaded file
-func (self *CategoryService) processChanges(categoryChanges *CategoryChanges) error {
-	return self.generateFullyQualifiedNames(categoryChanges.Id)
+// Handle CategorySave - before saving to the database
+func (self *CategoryService) beforeSave(category *entity.Category, categorySave *CategorySave) error {
+	return category.Merge(categorySave.Category, categorySave.Changes.Fields)
+}
+
+// Handle CategorySave - after saving to the database
+func (self *CategoryService) afterSave(category *entity.Category, categorySave *CategorySave) error {
+	return self.generateFullyQualifiedNames(categorySave.Id)
 }
 
 func (self *CategoryService) generateFullyQualifiedNames(categoryId int64) error {

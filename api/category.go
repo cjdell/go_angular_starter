@@ -112,8 +112,8 @@ func (req categoryRequest) ParentId() *int64 {
 	return queryInt(req.Request, "parent_id")
 }
 
-func (req categoryRequest) Category() *services.CategoryChanges {
-	category := &services.CategoryChanges{}
+func (req categoryRequest) Category() *services.CategorySave {
+	category := &services.CategorySave{}
 
 	if err := req.DecodeJsonPayload(&category); err != nil {
 		panic(err)
