@@ -120,7 +120,7 @@ var ItemController = ['$scope', '$q', '$state', '$stateParams', 'Api',
         .then(function(results) {
           return Api.delete($scope.record);
         })
-        .then(ctrl.saved, ctrl.failed);
+        .then(ctrl.deleted, ctrl.failed);
     };
 
     // Callbacks are declared privately
