@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type ContextKey int
@@ -71,8 +70,6 @@ type HandlerFuncWithError func(w rest.ResponseWriter, r *rest.Request, db persis
 func transactionWrap(db *sqlx.DB, f HandlerFuncWithError) rest.HandlerFunc {
 	return func(w rest.ResponseWriter, r *rest.Request) {
 		var err error
-
-		time.Sleep(200 * time.Millisecond)
 
 		tx, err := db.Beginx()
 
